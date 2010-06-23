@@ -1,0 +1,194 @@
+package optimization.messages.task;
+
+option java_outer_classname = "Java";
+option java_package = "ch.epfl.biorob.optimization.messages.task";
+
+/*
+ * The token message is used to send a token response from the master to the
+ * worker. A worker can challenge a master using a Response with status 
+ * Response.
+ */
+message Token {
+	required uint32 id = 1;
+	required string response = 2;
+}
+
+message Cancel {
+	required uint32 id = 1;
+}
+
+message Ping {
+	required uint32 id = 1;
+}
+
+/* The task message describes a task to be executed on a worker.
+ */ 
+message Task {
+	// A unique task id
+	required uint32 id = 1;
+	
+	// The dispatcher to dispatch this task to
+	required string dispatcher = 2;
+
+	// The name of the job to which this task belongs
+	required string job = 3;
+	
+	// The optimizer name which is running the optimization process
+	required string optimizer = 4;
+	
+	/* The parameter message denotes a specific parameter setting for this
+	 * particular task.
+	 */
+	message Parameter {
+		// The parameter name
+		required string name = 1;
+		
+		// The parameter value
+		required double value = 2;
+		
+		// The parameter boundaries
+		required double min = 3;
+		required double max = 4;
+	}
+	
+	// A list of parameters
+	repeated Parameter parameters = 5;
+	
+	/* The keyvalue message is used to make a dictionary of key -> value
+	 * items. It is used to encode particular dispatcher settings */
+	message KeyValue {
+		required string key = 1;
+		required string value = 2;
+	}
+	
+	// Dictionary of any additional dispatcher settings
+	repeated KeyValue settings = 6;
+
+	// Optional additional data to send
+	repeated KeyValue data = 7;
+
+	// Extensions
+	extensions 1000 to max;
+}
+
+/*
+ * The identification of the job to the master
+ */
+message Identify {
+	required string name = 1;
+	required string user = 2;
+	required double priority = 3;
+	optional double timeout = 4;
+}
+
+/*
+ * A batch of tasks send from the optimizer to the master
+ */
+message Batch {
+	repeated Task tasks = 1;
+	required double progress = 2;
+}
+
+/* A response message is the response to a certain request. It is send from the
+ * dispatcher all the way to the optimizer, being relayed by the worker and
+ * the master.
+ */
+message Response {
+	// Response status (either success, failed or challenge)
+	enum Status {
+		Success = 0;
+		Failed = 1;
+		Challenge = 2;
+	}
+	
+	// Key value pair of fitness values
+	message Fitness {
+		required string name = 1;
+		required double value = 2;
+	}
+	
+	message KeyValue {
+		required string key = 1;
+		required string value = 2;
+	}
+	
+	// Sub message describing a failure (when status is Failed)
+	message Failure {
+		enum Type
+		{
+			Timeout = 0;
+			DispatcherNotFound = 1;
+			NoResponse = 2;
+			Dispatcher = 3;
+			Unknown = 4;
+			WrongRequest = 5;
+			Disconnected = 6;
+		}
+		
+		// The type of failure
+		required Type type = 1;
+		
+		// An optional failure message
+		optional string message = 2;
+	}
+	
+	// The task id to which this is a response
+	required uint32 id = 1;
+	
+	// The status of the response
+	required Status status = 2;
+	
+	// A dictionary of fitness values in case of a 'Success' response
+	repeated Fitness fitness = 3;
+	
+	// The challenge key in case of a 'Challenge' response
+	optional string challenge = 4;
+	
+	// The failure description in case of a 'Failure' response
+	optional Failure failure = 5;
+	
+	// Additional data to be send
+	repeated KeyValue data = 6;
+	
+	// Extensions
+	extensions 1000 to max;
+}
+
+/* 
+ * Communication message send from the master to the worker. It can be either
+ * a task Request, or a Token
+ */
+message Communication {
+	enum Type {
+		CommunicationBatch = 0;
+		CommunicationTask = 1;
+		CommunicationResponse = 2;
+		CommunicationToken = 3;
+		CommunicationCancel = 4;
+		CommunicationIdentify = 5;
+		CommunicationPing = 6;
+	}
+	
+	// The type of communication
+	required Type type = 1;
+	
+	// The batch description in case of a CommunicationBatch type
+	optional Batch batch = 2;
+	
+	// The task description in case of a CommunicationTask type
+	optional Task task = 3;
+	
+	// The response description in case of a CommunicationResponse type
+	optional Response response = 4;
+
+	// The token response in case of a CommunicationToken type
+	optional Token token = 5;
+	
+	// The cancel description in case of CommunicationCancel type
+	optional Cancel cancel = 6;
+
+	// The identify description in case of CommunicationIdentify type
+	optional Identify identify = 7;
+
+	optional Ping ping = 8;
+}
