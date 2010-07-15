@@ -35,37 +35,7 @@ function optimization(port, exit_after_one)
 			comm = TaskInterface.CreateCommunication();
 			response = TaskInterface.CreateResponse();
 
-			w = TaskInterface.Setting('world');
-
-			if isempty(w)
-				TaskInterface.SetFailure(response,...
-				                         Java.Response.Failure.Type.WrongRequest,...
-				                         'The setting `world'' is not provided');
-			else if ~exist(w)
-				TaskInterface.SetFailure(response,...
-				                         Java.Response.Failure.Type.WrongRequest,...
-				                         'The `world'' could not be found');
-			else if ~exist(fullfile(w, 'evaluate'))
-				TaskInterface.SetFailure(response,...
-				                         Java.Response.Failure.Type.WrongRequest,
-				                         'The `world'' does not have a `run'' method');
-			else
-				wd = pwd();
-				origpath = path;
-
-				cd(w);
-				rehash;
-
-				try
-					evaluate(task, response);
-				catch
-				end
-
-				cd(wd);
-				path(origpath);
-
-				rehash;
-			end
+			execute_task(task, response);
 
 			if ~response.isInitialized()
 				response = TaskInterface.CreateResponse();
@@ -84,6 +54,12 @@ function optimization(port, exit_after_one)
 
 			if ~isempty(TaskInterface.Setting(task, 'optiextractor'))
 				exit_after_one = 1;
+			else
+				cleanup_path = fullfile(w, 'cleanup.m');
+
+				if exist(cleanup_path)
+					run(cleanup_path);
+				end
 			end
 		catch exception
 			disp(exception);
