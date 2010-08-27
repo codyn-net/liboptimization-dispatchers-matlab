@@ -6,7 +6,7 @@ SCRIPTS=execute_task.m optimization.m startup.m TaskInterface.class protobuf
 all: taskinterface
 
 taskinterface: protobuf TaskInterface.java
-	javac -classpath .:protobuf/build:/usr/share/java/protobuf-2.0.3.jar TaskInterface.java
+	javac -classpath .:protobuf/build:/usr/share/java/protobuf-2.2.0.jar TaskInterface.java
 
 protobuf:
 	$(MAKE) -sC protobuf
