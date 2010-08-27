@@ -1,0 +1,21 @@
+function evaluate(task, response)
+	% I don't know if you need this or not. If it doesn't work try
+	% uncommenting the following:
+	%
+	% import ch.epfl.biorob.optimization.messages.task.*;
+
+	% Getting a particular dispatcher setting
+	setting = TaskInterface.Setting(task, 'my_setting');
+
+	% Getting custom data of this solution
+	data = TaskInterface.Data(task, 'my_data');
+
+	% Adding custom data to a result
+	custom_data = 5;
+	TaskInterface.AddData(response, 'my_data', num2str(custom_data));
+
+	% Getting a parameter value from the task
+	param = TaskInterface.Parameter(task, 'amplitude');
+
+	% Setting a fitness value
+	TaskInterface.AddFitness(response, 'fitness', 10.2);
