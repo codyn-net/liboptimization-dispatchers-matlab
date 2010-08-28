@@ -1,11 +1,12 @@
-function optimization(port, exit_after_one)
+function optimization(port, exit_after)
 	import java.io.*;
 	import java.net.*;
 
 	global opticfg
+	evalin('base', 'global opticfg');
 
-	if nargin < 3
-		exit_after_one = 0;
+	if nargin < 2
+		exit_after = 0;
 	end
 
 	import ch.epfl.biorob.optimization.messages.task.*;
@@ -15,6 +16,7 @@ function optimization(port, exit_after_one)
 	server.bind(InetSocketAddress(port));
 
 	opticfg.server_socket = server;
+	hasrun = 0;
 
 	while 1
 		disp(['[', datestr(now, 'dd-mm HH:MM:SS'), '] Waiting for new task...']);
@@ -22,8 +24,7 @@ function optimization(port, exit_after_one)
 		try
 			connection = server.accept();
 		catch exception
-			disp(exception);
-			disp(exception.message);
+			disp(getReport(exception));
 			break
 		end
 	
@@ -41,7 +42,7 @@ function optimization(port, exit_after_one)
 				response = TaskInterface.CreateResponse();
 
 				TaskInterface.SetFailure(response,...
-				                         Java.Response.Failure.Type.NoResponse,
+				                         Java.Response.Failure.Type.NoResponse,...
 				                         'Invalid response from evaluator');
 			end
 
@@ -53,20 +54,17 @@ function optimization(port, exit_after_one)
 			end
 
 			if ~isempty(TaskInterface.Setting(task, 'optiextractor'))
-				exit_after_one = 1;
+				exit_after = 1;
 			else
-				cleanup_path = fullfile(w, 'cleanup.m');
-
-				if exist(cleanup_path)
-					run(cleanup_path);
-				end
+				cleanup_task(task);
 			end
 		catch exception
-			disp(exception);
-			disp(exception.message);
+			disp(getReport(exception));
 		end
 
-		if exit_after_one
+		hasrun = hasrun + 1;
+
+		if exit_after > 0 && hasrun >= exit_after
 			break;
 		end
 
