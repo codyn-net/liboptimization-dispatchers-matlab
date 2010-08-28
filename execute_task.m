@@ -39,8 +39,7 @@ function execute_task(task, response)
 			load_ws(workspace);
 			evaluate(task, response);
 		catch exception
-			disp(exception);
-			disp(exception.message);
+			disp(getReport(exception));
 		end
 
 		cd(wd);
