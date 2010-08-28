@@ -1,4 +1,4 @@
-function load_sim_workspace(workspace)
+function load_workspace(workspace)
 	if ~exist(workspace)
 		return
 	end
