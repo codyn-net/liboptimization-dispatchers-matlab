@@ -1,7 +1,15 @@
 PREFIX=/usr
 DEST=$(PREFIX)/libexec/liboptimization-dispatchers-2.0/matlab
 
-SCRIPTS=execute_task.m optimization.m startup.m TaskInterface.class protobuf
+SCRIPTS= \
+	cleanup_task.m		\
+	execute_task.m		\
+	load_workspace.m	\
+	odetest.m		\
+	optimization.m		\
+	startup.m		\
+	TaskInterface.class	\
+	protobuf
 
 all: taskinterface
 
