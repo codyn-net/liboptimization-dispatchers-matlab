@@ -31,6 +31,10 @@ function optimization(port, exit_after)
 		try
 			task = TaskInterface.Read(connection.getInputStream());
 
+			if ~isempty(TaskInterface.Setting(task, '__stop__'))
+				exit_after = 1;
+			end
+
 			% Matlab does not support nested classes, so this is a bit lame
 			% but at least it works
 			comm = TaskInterface.CreateCommunication();
