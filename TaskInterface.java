@@ -38,6 +38,30 @@ class TaskInterface
 		return 0;
 	}
 
+	public static Java.Task.KeyValue[] Settings(Java.Task task)
+	{
+		Java.Task.KeyValue[] settings = new Java.Task.KeyValue[task.getSettingsCount()];
+
+		for (int i = 0; i < task.getSettingsCount(); ++i)
+		{
+			settings[i] = task.getSettings(i);
+		}
+
+		return settings;
+	}
+
+	public static Java.Task.Parameter[] Parameters(Java.Task task)
+	{
+		Java.Task.Parameter[] parameters = new Java.Task.Parameter[task.getParametersCount()];
+
+		for (int i = 0; i < task.getParametersCount(); ++i)
+		{
+			parameters[i] = task.getParameters(i);
+		}
+
+		return parameters;
+	}
+
 	public static String Setting(Java.Task task, String name)
 	{
 		for (int i = 0; i < task.getSettingsCount(); ++i)
