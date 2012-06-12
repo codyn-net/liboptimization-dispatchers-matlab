@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<job>
+  <optimizer name="pso">
+    <setting name="max-iterations">20</setting>
+    <setting name="population-size">5</setting>
+
+    <boundaries>
+      <boundary name="x" min="0" max="1"/>
+    </boundaries>
+
+    <parameters>
+      <parameter name="x" boundary="x"/>
+    </parameters>
+
+    <fitness>
+      <expression>value</expression>
+    </fitness>
+  </optimizer>
+
+  <dispatcher name="external">
+    <!-- settings for the matlab external dispatcher -->
+    <setting name="path">matlab</setting>
+    <setting name="persistent">2222</setting>
+    <setting name="arguments">-nospash -nodesktop</setting>
+    <setting name="startup-delay">5</setting>
+
+    <!-- path to the working directory where to launch matlab -->
+    <setting name="working-directory">PATH_TO_SPECIAL_MATLAB_DISPATCHER</setting>
+
+    <!-- settings for the matlab dispatcher -->
+    <setting name="world">PATH_TO_MATLAB_DIR</setting>
+    <setting name="workspace">PATH_TO_MATLAB_TASK_WORKSPACE</setting>
+
+    <!-- application settings -->
+    <setting name="max_time">5</setting>
+  </dispatcher>
+</job>
+<!-- vi:ts=2:et -->
