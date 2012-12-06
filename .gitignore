@@ -1,2 +1,12 @@
-protobuf/build
+.protobuf-build
 TaskInterface.class
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+install-sh
+INSTALL
+Makefile
+Makefile.in
+missing
