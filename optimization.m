@@ -27,7 +27,7 @@ function optimization(port, exit_after)
 			disp(getReport(exception));
 			break
 		end
-	
+
 		try
 			task = TaskInterface.Read(connection.getInputStream());
 
@@ -40,7 +40,15 @@ function optimization(port, exit_after)
 			comm = TaskInterface.CreateCommunication();
 			response = TaskInterface.CreateResponse();
 
-			execute_task(task, response);
+			try
+				execute_task(task, response);
+			catch exception
+				response = TaskInterface.CreateResponse();
+
+				TaskInterface.SetFailure(response,...
+				                         Java.Response.Failure.Type.Dispatcher,...
+				                         getReport(exception));
+			end
 
 			if ~response.isInitialized()
 				response = TaskInterface.CreateResponse();
