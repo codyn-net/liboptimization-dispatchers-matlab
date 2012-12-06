@@ -1,9 +1,12 @@
 % Main entry point for the matlab dispatcher
 
-javaaddpath('.');
-javaaddpath('protobuf/build');
+p = mfilename('fullpath');
+[pdir, ~, ~] = fileparts(p);
 
-jars = {'/usr/share/java/protobuf.jar', '/usr/share/java/protobuf-java.jar'};
+javaaddpath(pdir);
+javaaddpath(fullfile(pdir, 'protobuf'));
+
+jars = {'@PROTOBUF_JAR@', '/usr/share/java/protobuf.jar', '/usr/share/java/protobuf-java.jar'};
 
 for i = 1:length(jars)
     if exist(jars{i}, 'file')

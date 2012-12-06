@@ -56,4 +56,5 @@ AC_SUBST(PROTODIR)
 
 AC_OUTPUT(
 Makefile
+startup.m
 )
