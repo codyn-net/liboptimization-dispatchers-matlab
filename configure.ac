@@ -23,19 +23,25 @@ AC_PATH_PROG([JAVAC], [javac], [AC_MSG_ERROR([failed to find javac])])
 AC_SUBST(JAVAC)
 
 dnl Checking for protobuf java package
-AC_MSG_CHECKING([protobuf java])
+AC_MSG_CHECKING([for protobuf java])
 
-PROTOBUFJARS = protobuf.jar protobuf-java.jar
-JAVAJARDIR = $prefix/java /usr/local/share/java /usr/share/java
+PROTOBUFJARS="protobuf.jar protobuf-java.jar"
+JAVAJARDIRS="$prefix/java /usr/local/share/java /usr/share/java"
 
 for f in $PROTOBUFJARS; do
-	if [ -f $JAVAJARDIR/$f ]; then
-		PROTOBUF_JAR = $JAVAJARDIR/$f
-		break;
+	for d in $JAVAJARDIRS; do
+		if test -f "$d/$f"; then
+			PROTOBUF_JAR="$d/$f"
+			break;
+		fi
+	done
+
+	if test ! -z "$PROTOBUF_JAR"; then
+		break
 	fi
 done
 
-if [ -z $PROTOBUF_JAR; ] then
+if test -z "$PROTOBUF_JAR"; then
 	AC_MSG_ERROR([failed to find protobuf java])
 else
 	AC_MSG_RESULT([found in $PROTOBUF_JAR])
