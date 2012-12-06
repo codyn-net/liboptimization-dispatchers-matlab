@@ -21,7 +21,7 @@ MATLAB_FILES = 			\
 	set_fitness.m		\
 	startup.m
 
-disp_DATA = $(MATLAB_FILES)
+disp_DATA = $(MATLAB_FILES) TaskInterface.class
 
 javatarget = ch/epfl/biorob/optimization/messages/task
 javasource = $(javatarget)/Java.java
@@ -78,9 +78,14 @@ javadir = $(dispdir)/protobuf/$(javatarget)
 java_DATA = \
 	$(javatargets)
 
+TaskInterface.class: $(javatargets) TaskInterface.java
+	$(AM_V_GEN)$(JAVAC) -classpath .:.protobuf-build:$(PROTOBUF_JAR) TaskInterface.java
+
 CLEANFILES = \
 	$(javatargets) \
+	.protobuf-build/.java-stamp \
 	.protobuf-build/$(javasource)
 
 EXTRA_DIST = \
-	$(MATLAB_FILES)
+	$(MATLAB_FILES) \
+	TaskInterface.java
