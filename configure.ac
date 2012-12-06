@@ -1,6 +1,6 @@
 AC_INIT(liboptimization-dispatchers-matlab, 2.1)
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE([gnu no-dist-gzip tar-ustar dist-xz -Wno-portability])
 
 AC_CONFIG_MACRO_DIR([m4])
 
