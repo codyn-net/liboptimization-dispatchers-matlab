@@ -1,7 +1,7 @@
 function cleanup_task(task)
     import ch.epfl.biorob.optimization.messages.task.*;
 
-	w = char(TaskInterface.Setting(task, 'world'));
+    w = char(TaskInterface.Setting(task, 'world'));
 
     if ~isempty(w)
         cleanup_path = fullfile(w, 'cleanup.m');
@@ -10,3 +10,6 @@ function cleanup_task(task)
             run(cleanup_path);
         end
     end
+end
+
+% vi:ts=4:et

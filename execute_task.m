@@ -1,49 +1,79 @@
-function execute_task(task, response)
-	import ch.epfl.biorob.optimization.messages.task.*;
+function [ws, w, tpath] = execute_task(task, response)
+    import ch.epfl.biorob.optimization.messages.task.*;
 
-	w = char(TaskInterface.Setting(task, 'world'));
+    w = char(TaskInterface.Setting(task, 'world'));
 
-	if isempty(w)
-		TaskInterface.SetFailure(response,...
-		                         Java.Response.Failure.Type.WrongRequest,...
-		                         'The setting `world'' is not provided');
-	elseif ~exist(w)
-		TaskInterface.SetFailure(response,...
-		                         Java.Response.Failure.Type.WrongRequest,...
-		                         'The `world'' could not be found');
-	elseif ~exist(fullfile(w, 'evaluate.m'))
-		TaskInterface.SetFailure(response,...
-		                         Java.Response.Failure.Type.WrongRequest,...
-		                         'The `world'' does not have an `evaluate'' method');
-	else
-		wd = pwd();
-		origpath = path;
+    ws = struct();
+    tpath = path;
 
-		load_ws = @load_workspace;
+    if isempty(w)
+        TaskInterface.SetFailure(response,...
+                                 Java.Response.Failure.Type.WrongRequest,...
+                                 'The setting `world'' is not provided');
+    elseif ~exist(w)
+        TaskInterface.SetFailure(response,...
+                                 Java.Response.Failure.Type.WrongRequest,...
+                                 'The `world'' could not be found');
+    elseif ~exist(fullfile(w, 'evaluate.m'))
+        TaskInterface.SetFailure(response,...
+                                 Java.Response.Failure.Type.WrongRequest,...
+                                 'The `world'' does not have an `evaluate'' method');
+    else
+        wd = pwd();
+        origpath = path;
 
-		cd(w);
-		rehash;
+        funcs.load_workspace = @load_workspace;
+        funcs.extract_task = @extract_task;
+        funcs.set_fitness = @set_fitness;
 
-		try
-			% Try to get the workspace
-			workspace = char(TaskInterface.Setting(task, 'workspace'));
+        c = onCleanup(@()cleanitup(wd, origpath));
 
-			if isempty(workspace)
-				workspace = 'workspace.mat';
-			end
+        cd(w);
+        rehash;
 
-			if workspace(1) ~= '/'
-				workspace = fullfile(w, workspace);
-			end
+        try
+            % Try to get the workspace
+            workspace = char(TaskInterface.Setting(task, 'workspace'));
 
-			load_ws(workspace);
-			evaluate(task, response);
-		catch exception
-			disp(getReport(exception));
-		end
+            if isempty(workspace)
+                workspace = 'workspace.mat';
+            end
 
-		cd(wd);
-		path(origpath);
+            if workspace(1) ~= '/'
+                workspace = fullfile(w, workspace);
+            end
 
-		rehash;
-	end
+            t = funcs.extract_task(task);
+            ws = funcs.load_workspace(workspace);
+
+            if nargout('evaluate') == 2
+                if nargin('evaluate') == 2
+                    [fit, data] = evaluate(t, ws);
+                else
+                    [fit, data] = evaluate(t);
+                end
+            else
+                if nargin('evaluate') == 2
+                    fit = evaluate(t, ws);
+                else
+                    fit = evaluate(t);
+                end
+
+                data = struct();
+            end
+
+            tpath = path;
+            funcs.set_fitness(fit, data, response);
+        catch exception
+            disp(getReport(exception));
+        end
+    end
+end
+
+function cleanitup(wd, p)
+    cd(wd);
+    path(p);
+    rehash;
+end
+
+% vi:ts=4:et
