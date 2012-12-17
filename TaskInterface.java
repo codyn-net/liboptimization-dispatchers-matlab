@@ -98,7 +98,19 @@ class TaskInterface
 		return null;
 	}
 
-	public static String Data(Java.Task task, String name)
+	public static Java.Task.KeyValue[] Data(Java.Task task)
+	{
+		Java.Task.KeyValue[] data = new Java.Task.KeyValue[task.getDataCount()];
+
+		for (int i = 0; i < task.getDataCount(); ++i)
+		{
+			data[i] = task.getData(i);
+		}
+
+		return data;
+	}
+
+	public static String DataByName(Java.Task task, String name)
 	{
 		for (int i = 0; i < task.getDataCount(); ++i)
 		{
