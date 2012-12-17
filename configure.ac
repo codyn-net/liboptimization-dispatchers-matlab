@@ -1,4 +1,4 @@
-AC_INIT(liboptimization-dispatchers-matlab, 2.1)
+AC_INIT(liboptimization-dispatchers-matlab, 2.2)
 
 AM_INIT_AUTOMAKE([gnu no-dist-gzip tar-ustar dist-xz -Wno-portability])
 
