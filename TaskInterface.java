@@ -5,6 +5,27 @@ import ch.epfl.biorob.optimization.messages.task.*;
 
 class TaskInterface
 {
+	public static final Java.Response.Failure.Type FailureTimeout =
+		Java.Response.Failure.Type.Timeout;
+
+	public static final Java.Response.Failure.Type FailureDispatcherNotFound =
+		Java.Response.Failure.Type.DispatcherNotFound;
+
+	public static final Java.Response.Failure.Type FailureNoResponse =
+		Java.Response.Failure.Type.NoResponse;
+
+	public static final Java.Response.Failure.Type FailureDispatcher =
+		Java.Response.Failure.Type.Dispatcher;
+
+	public static final Java.Response.Failure.Type FailureUnknown =
+		Java.Response.Failure.Type.Unknown;
+
+	public static final Java.Response.Failure.Type FailureWrongRequest =
+		Java.Response.Failure.Type.WrongRequest;
+
+	public static final Java.Response.Failure.Type FailureDisconnected =
+		Java.Response.Failure.Type.Disconnected;
+
 	public static Java.Task Read(InputStream inps) throws IOException
 	{
 		int ss = ReadSize(inps);
