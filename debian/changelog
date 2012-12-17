@@ -1,3 +1,11 @@
+liboptimization2-dispatchers-matlab (2.2-1) UNRELEASED; urgency=low
+
+  * New upstream release
+  * Fixes for new java layout of generated protobuf messages
+    using with matlab
+
+ -- Jesse van den Kieboom <jesse.vandenkieboom@epfl.ch>  Mon, 17 Dec 2012 09:36:51 +0100
+
 liboptimization2-dispatchers-matlab (2.1-1) UNRELEASED; urgency=low
 
   * New upstream release
