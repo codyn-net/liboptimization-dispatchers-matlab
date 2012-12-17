@@ -5,6 +5,27 @@ import ch.epfl.biorob.optimization.messages.task.*;
 
 class TaskInterface
 {
+	public static final Java.Response.Failure.Type FailureTimeout =
+		Java.Response.Failure.Type.Timeout;
+
+	public static final Java.Response.Failure.Type FailureDispatcherNotFound =
+		Java.Response.Failure.Type.DispatcherNotFound;
+
+	public static final Java.Response.Failure.Type FailureNoResponse =
+		Java.Response.Failure.Type.NoResponse;
+
+	public static final Java.Response.Failure.Type FailureDispatcher =
+		Java.Response.Failure.Type.Dispatcher;
+
+	public static final Java.Response.Failure.Type FailureUnknown =
+		Java.Response.Failure.Type.Unknown;
+
+	public static final Java.Response.Failure.Type FailureWrongRequest =
+		Java.Response.Failure.Type.WrongRequest;
+
+	public static final Java.Response.Failure.Type FailureDisconnected =
+		Java.Response.Failure.Type.Disconnected;
+
 	public static Java.Task Read(InputStream inps) throws IOException
 	{
 		int ss = ReadSize(inps);
@@ -77,7 +98,19 @@ class TaskInterface
 		return null;
 	}
 
-	public static String Data(Java.Task task, String name)
+	public static Java.Task.KeyValue[] Data(Java.Task task)
+	{
+		Java.Task.KeyValue[] data = new Java.Task.KeyValue[task.getDataCount()];
+
+		for (int i = 0; i < task.getDataCount(); ++i)
+		{
+			data[i] = task.getData(i);
+		}
+
+		return data;
+	}
+
+	public static String DataByName(Java.Task task, String name)
 	{
 		for (int i = 0; i < task.getDataCount(); ++i)
 		{
